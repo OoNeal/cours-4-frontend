@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import Counter from '../CounterComponent.vue'
@@ -9,9 +9,9 @@ function mountCounter(x = 0) {
     global: {
       plugins: [
         createTestingPinia({
+          createSpy: vi.fn,
           initialState: {
-            counter: { count: x }
-          }
+            counter: { count: x }          }
         })
       ]
     }
