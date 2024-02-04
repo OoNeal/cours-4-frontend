@@ -1,16 +1,14 @@
-import { describe, it, expect, vi } from 'vitest'
-
+import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import Counter from '../CounterComponent.vue'
 import { useCounterStore } from '@/stores/counter'
 
 function mountCounter(x = 0) {
-  const wrapper = mount(Counter, {
+  return mount(Counter, {
     global: {
       plugins: [
         createTestingPinia({
-          createSpy: vi.fn,
           initialState: {
             counter: { count: x }
           }
@@ -18,7 +16,6 @@ function mountCounter(x = 0) {
       ]
     }
   })
-  return wrapper
 }
 
 describe('Counter', () => {
@@ -26,16 +23,23 @@ describe('Counter', () => {
     const wrapper = mountCounter(50)
     expect(wrapper.text()).toContain('Counter: 50')
   })
+
   describe('Clicks', () => {
-    it('increments counter', async () => {
-      const wrapper = mountCounter(50)
-      const counterStore = useCounterStore()
+    let wrapper
+    let counterStore
+
+    it('counter increment', async () => {
+      wrapper = mountCounter(50)
+      counterStore = useCounterStore()
       await wrapper.find('button[id=increment]').trigger('click')
       expect(counterStore.increment).toHaveBeenCalledTimes(1)
     })
-    it('decrements counter', async () => {
-      const wrapper = mountCounter(50)
-      const counterStore = useCounterStore()
+
+    it('counter decrement', async () => {
+      wrapper = mountCounter(50)
+      counterStore = useCounterStore()
+      await wrapper.find('button[id=decrement]').trigger('click')
+      expect(counterStore.decrement).toHaveBeenCalledTimes(1)
     })
   })
 })
